@@ -69,6 +69,6 @@ for i in range(len(names)):
 
 #ts.evaluate_method('flat', 0.3, exclude = e)
 
-print ''
+print('')
 timetaken = time.time() - start
-print 'This code took' , timetaken , ' seconds (',timetaken/60.,' mins) to run.'
+print('This code took' , timetaken , ' seconds (',timetaken/60.,' mins) to run.')
