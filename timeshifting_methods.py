@@ -28,7 +28,7 @@ def flat_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     
@@ -73,7 +73,7 @@ def front_angle_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     
@@ -121,7 +121,7 @@ def front_normal_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
                
     A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7];ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
@@ -169,7 +169,7 @@ def MVAB0_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7]; ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
@@ -235,7 +235,7 @@ def MVAB_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7];ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
@@ -293,7 +293,7 @@ def cross_product_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7];ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
@@ -309,7 +309,6 @@ def cross_product_shift(*kargs, **parameters):
     B_b = np.nanmean(B[center - parameters['dist'] -parameters['size']/2: center -parameters['dist']+ parameters['size']/2],0)
     
     B_a = np.nanmean(B[center + parameters['dist'] -parameters['size']/2: center + parameters['dist']+ parameters['size']/2],0)
-    #print B_b[0]
     
     if np.isnan(B_b[0]):
         return np.nan
@@ -341,7 +340,7 @@ def jackel_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     
@@ -374,7 +373,7 @@ def empirical_shift (*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     
@@ -418,7 +417,7 @@ def empirical_2_shift (*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     
@@ -463,7 +462,7 @@ def nn_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     
@@ -482,10 +481,6 @@ def nn_shift(*kargs, **parameters):
     a_Bz = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[2]
     
     
-    #print v
-    #print a_pos
-    #print a_pos/v
-    
     a_pos_x = a_pos_x/6376./200
     a_pos_y = a_pos_y/6376./200
     a_pos_z = a_pos_z/6376./200
@@ -499,7 +494,6 @@ def nn_shift(*kargs, **parameters):
     
     shift = calc_model(parameters['w'], inp)*60*60.
     
-    #print shift
     #1/0
     
     return shift  
@@ -517,7 +511,7 @@ def ensemble_nn_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     
@@ -535,10 +529,7 @@ def ensemble_nn_shift(*kargs, **parameters):
     a_By = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[1]
     a_Bz = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[2]
     
-    
-    #print v
-    #print a_pos
-    #print a_pos/v
+
     
     a_pos_x = a_pos_x/6376./200
     a_pos_y = a_pos_y/6376./200
@@ -574,7 +565,7 @@ def const_shift(*kargs, **parameters):
     #This lists out the parameter values if asked.
     if len(kargs) == 0 :
         for p in plist:
-            print p+' = '+str(parameters[p])
+            print(p+' = '+str(parameters[p]))
         return 1
             
     

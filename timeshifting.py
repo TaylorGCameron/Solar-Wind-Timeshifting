@@ -121,7 +121,7 @@ def calc_timeshifts_year(year, goes, interval_length, filename, dt = 0.5/24., me
     #First, check whether this data file exists already
     if parameters['overwrite'] == False:
         if os.path.exists(filename+'.npy'):
-            print 'File '+filename+' already exists! Skipping...'
+            print('File '+filename+' already exists! Skipping...')
             return 1
         
     ACE, ACE_B, GOES = load_data(year, goes, mode = 'pc')
@@ -148,11 +148,11 @@ def calc_timeshifts_year(year, goes, interval_length, filename, dt = 0.5/24., me
     Ab_i = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/indices/'+str(year)+'_ACE_B_indices.npy')
     G_i = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/indices/'+str(year)+'_GOES_indices.npy')        
     if not hasattr(tsm,method):
-        print 'That method doesnt exist!'
+        print('That method doesnt exist!')
         return -1
     timeshifting_method = getattr(tsm, method)
         
-    print 'Starting '+ method +' method'
+    print('Starting '+ method +' method')
     timeshifting_method(**parameters)    
     
     for i in range(0,len(start_times)):  
@@ -161,9 +161,9 @@ def calc_timeshifts_year(year, goes, interval_length, filename, dt = 0.5/24., me
             uf.status(int(float(i)/float(len(start_times))*100))    
 
 
-    print ''
+    print('')
     timetaken = time.time() - start
-    print  timetaken , ' seconds'
+    print(timetaken , ' seconds')
     
     
     np.save(filename,  shifts)
@@ -175,17 +175,16 @@ def calc_timeshifts(method, name, **parameters):
     GOES = [10,10,10,10,12,12,12,12,12,12]
 
     for i in range(10):
-        print 'Starting ', year[i]
+        print('Starting ', year[i])
         calc_timeshifts_year(year[i], GOES[i], 2./24., path+str(year[i])+'_'+name+'_shifts', dt = 0.5/24., method = method+'_shift', **parameters)    
 
-    print 'Done!'    
+    print('Done!') 
     
     
 def evaluate_method(method, corr_min, exclude = []):
     ideal_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts.npy')
     ideal_shifts_corrs = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts_corrs.npy')
     
-    #print len(ideal_shifts)    
 
     years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009]
     
@@ -195,7 +194,6 @@ def evaluate_method(method, corr_min, exclude = []):
         year_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/shifts_toGOES/'+str(year)+'_'+method+'_shifts.npy')
         shifts = np.append(shifts, year_shifts)
     
-    #print len(shifts)
     
     deltas =  ideal_shifts - shifts/60.
     
@@ -222,10 +220,10 @@ def evaluate_method(method, corr_min, exclude = []):
 
     plt.plot(centers, hist[0], '-')
     plt.plot(centers, hist_fit_flat)
-    print 'For ',method,':'
+    print('For ',method,':')
     
-    print 'Width is ', width
-    print 'Center is ', center
-    print ' '
-    print ''
+    print('Width is ', width)
+    print('Center is ', center)
+    print('')
+    print('')
     return width, deltas

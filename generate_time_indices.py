@@ -74,6 +74,6 @@ def calc_time_indices(year, goes, interval_length, dt, mode ='pc'):
 year = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009]
 GOES = [10,10,10,10,12,12,12,12,12,12]
 for i in range(10):
-    print year[i]
-    print ' '
+    print(year[i])
+    print('')
     x = calc_time_indices(year[i],GOES[i],2./24., 0.5/24.)
