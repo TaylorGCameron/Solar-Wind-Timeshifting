@@ -14,7 +14,7 @@ import useful_functions as uf
 import os
 
 #Pulls a year of ACE data from the server, cleans it up and saves it to a file.
-def pull_ACE(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'):
+def pull_ACE(year, filepath = ''):
     
     filename = filepath+'ACE_'+str(year)+'.npy'
 
@@ -73,7 +73,7 @@ def collapse_down(arr,n):
     return np.mean(arr[:(len(arr)//n)*n].reshape(-1,n), axis=1)
 
 #Pulls a year of ACE magnetic field data, collapses it down to 64 second cadence, and saves it to a file
-def pull_ACE_B(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'):
+def pull_ACE_B(year, filepath = ''):
     
     filename = filepath+'ACE_B_'+str(year)+'.npy'
 
@@ -120,7 +120,7 @@ def pull_ACE_B(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timesh
     print('File saved to ' + filename)
 
 
-def pull_GOES(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'):
+def pull_GOES(year, filepath = ''):
     
     filename = filepath+'GOES_'+str(year)+'.npy'
 
@@ -182,7 +182,7 @@ def pull_GOES(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshi
     print(str(year)+' finished!')
     print('File saved to ' + filename)
     
-filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'
+filepath = uf.get_parameter('filepath')
 
 for i in range(2000, 2010):
     pull_ACE(i, filepath = filepath)
