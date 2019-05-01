@@ -5,40 +5,30 @@ Created on Tue Jan 10 13:40:03 2017
 @author: Taylor
 """
 
-import os
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
-import time
-import matplotlib.dates as mdate
-import scipy
-import scipy.interpolate
-import scipy.stats
-import datetime
 import sys
-from numpy import linalg as LA
-from scipy.optimize import curve_fit
 from scipy import interpolate    
 
-
-def plot_hist(stuff, n):
-    """
-    Quick and dirty way to plot a 1D histogram, figuring out the bin positions.
-    
-    Parameters:
-    ----------    
-    stuff : array_like
-        Some 1D array of values
-    n: integer
-        Number of bins
-    
-    """
-    import numpy as np
-    hist = np.histogram(stuff[np.isfinite(stuff)], bins = n)
-    width = 1.0 * (hist[1][1] - hist[1][0])
-    center = (hist[1][:-1] + hist[1][1:]) / 2
-    plt.bar(center, hist[0], align='center', width = width)
-    plt.show()
+#pyplot stuff causes problems when run from a terminal, so I deactivated it for now.
+#def plot_hist(stuff, n):
+#    """
+#    Quick and dirty way to plot a 1D histogram, figuring out the bin positions.
+#    
+#    Parameters:
+#    ----------    
+#    stuff : array_like
+#        Some 1D array of values
+#    n: integer
+#        Number of bins
+#    
+#    """
+#    import numpy as np
+#    hist = np.histogram(stuff[np.isfinite(stuff)], bins = n)
+#    width = 1.0 * (hist[1][1] - hist[1][0])
+#    center = (hist[1][:-1] + hist[1][1:]) / 2
+#    plt.bar(center, hist[0], align='center', width = width)
+#    plt.show()
 
 def deg2rad(theta):
     """ Converts an angle in degrees to radians """
@@ -51,13 +41,13 @@ def rad2deg(theta):
 #Print a status bar thing. 
 def status(percent):
     """"Outputs a status bar, input is an integer percent"""
-    sys.stdout.write('\r|'+'='*(percent/4)+' '*(25-percent/4)+'| '+ str(percent)+'%')
+    print('\r|'+'='*(percent//4)+' '*(25-percent//4)+'| '+ str(percent)+'%',end='\r')
     sys.stdout.flush()
 
 def status_bar(n, nmax):
     """"Outputs a status bar, input is an integer percent"""
     percent = int(float(n)/float(nmax)*100)
-    sys.stdout.write('\r|'+'='*(percent/4)+' '*(25-percent/4)+'| '+ str(percent)+'%')
+    print('\r|'+'='*(percent//4)+' '*(25-percent//4)+'| '+ str(percent)+'%',end='\r')
     sys.stdout.flush()
     
 def keep_finite(q1, q2):
