@@ -11,23 +11,7 @@ import os
 import datetime
 import useful_functions as uf
 
-def interval(t1,t2, t):
-    """
-    Returns the start and end indices for t that contain all times between t1 and t2
-    
-    Parameters:
-    ----------    
-    t1 : float
-        Start time (days since 0001-01-01 00:00:00 UTC, plus one)
-    t2 : float
-        End time (same format as above)
-    t : array_like
-        A list of times in the same format as above.
-    """
-    t_out =  np.arange(len(t))[(t >= t1) & (t < t2)]
-    if len(t_out) == 0:
-        return [np.nan, np.nan]
-    return [t_out[0],t_out[-1]]
+
 
 def calc_time_indices(year, interval_length, dt, filepath = ''):
     print('Calculating indices for '+str(year))
@@ -60,9 +44,9 @@ def calc_time_indices(year, interval_length, dt, filepath = ''):
     GOES_time_indices = np.empty([len(start_times),2], dtype = int)
     
     for i in range(0,len(start_times)):  
-            [Abt1, Abt2] = interval(start_times[i], end_times[i], ACE_B_t) 
-            [At1, At2] = interval(start_times[i], end_times[i], ACE_t)   
-            [Gt1, Gt2] = interval(start_times[i], end_times[i], GOES_t)
+            [Abt1, Abt2] = uf.interval(start_times[i], end_times[i], ACE_B_t) 
+            [At1, At2] = uf.interval(start_times[i], end_times[i], ACE_t)   
+            [Gt1, Gt2] = uf.interval(start_times[i], end_times[i], GOES_t)
             if np.isnan(At1) or np.isnan(Gt1):
                ACE_B_time_indices[i] = [-1,-1] 
                ACE_time_indices[i] = [-1,-1] 

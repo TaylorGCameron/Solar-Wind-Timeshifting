@@ -31,6 +31,24 @@ from scipy import interpolate
 #    plt.show()
 
 
+def interval(t1,t2, t):
+    """
+    Returns the start and end indices for t that contain all times between t1 and t2
+    
+    Parameters:
+    ----------    
+    t1 : float
+        Start time (days since 0001-01-01 00:00:00 UTC, plus one)
+    t2 : float
+        End time (same format as above)
+    t : array_like
+        A list of times in the same format as above.
+    """
+    t_out =  np.arange(len(t))[(t >= t1) & (t < t2)]
+    if len(t_out) == 0:
+        return [np.nan, np.nan]
+    return [t_out[0],t_out[-1]]
+
 #Goes through some text and finds the value associated with some keyword. 
 #keywords and values are separated by an = sign, so we have "keyword = value".
 def get_keyword(text, keyword):
