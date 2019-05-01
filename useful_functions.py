@@ -30,6 +30,22 @@ from scipy import interpolate
 #    plt.bar(center, hist[0], align='center', width = width)
 #    plt.show()
 
+
+#Goes through some text and finds the value associated with some keyword. 
+#keywords and values are separated by an = sign, so we have "keyword = value".
+def get_keyword(text, keyword):
+    ind1 = text.find(keyword)
+    ind2 = text[ind1:].find('\n') + ind1
+    return text[ind1:ind2][text[ind1:ind2].find('=')+1:].replace(' ','')
+
+def get_parameter(keyword):
+    f = open('config.par')
+    pars= f.read()
+    f.close()
+    pars = pars+'\n'
+    return get_keyword(pars, keyword)
+
+
 def deg2rad(theta):
     """ Converts an angle in degrees to radians """
     return theta*np.pi/180.0
