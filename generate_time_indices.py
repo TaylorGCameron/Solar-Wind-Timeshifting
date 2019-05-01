@@ -31,7 +31,7 @@ def interval(t1,t2, t):
 
 def calc_time_indices(year, interval_length, dt, filepath = ''):
     print('Calculating indices for '+str(year))
-    filename = filepath+'ACE_indicies_'+str(year)+'.npy'
+    filename = filepath+'ACE_indices_'+str(year)+'.npy'
 
     #Check if file already exists
     if os.path.exists(filename):
@@ -84,9 +84,10 @@ def calc_time_indices(year, interval_length, dt, filepath = ''):
             if np.mod(i,200) == 0 and i != 0:
                 uf.status(int(float(i)/float(len(start_times))*100))
 
-    np.save(filepath+'/ACE_indices_'+str(year)+'str(.npy)',  ACE_time_indices)
-    np.save(filepath+'/GOES_indices_'+str(year)+'str(.npy)', GOES_time_indices)
-    np.save(filepath+'/ACE_B_indices_'+str(year)+'str(.npy)',  ACE_B_time_indices)    
+    np.save(filepath+'/ACE_indices_'+str(year)+'.npy',  ACE_time_indices)
+    np.save(filepath+'/GOES_indices_'+str(year)+'.npy', GOES_time_indices)
+    np.save(filepath+'/ACE_B_indices_'+str(year)+'.npy',  ACE_B_time_indices)    
+    print('')
     return 1
     
 filepath = uf.get_parameter('filepath')    
