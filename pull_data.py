@@ -11,9 +11,18 @@ import datetime
 #import json # for pretty output
 from ai import cdas
 import useful_functions as uf
+import os
 
 #Pulls a year of ACE data from the server, cleans it up and saves it to a file.
 def pull_ACE(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'):
+    
+    filename = filepath+'ACE_'+str(year)+'.npy'
+
+
+    #Check if file already exists
+    if os.path.exists(filename+'.npy'):
+         print('File '+filename+' already exists! Skipping...')
+         return 1
     
     #First create empty structures to hold the data
     
@@ -55,9 +64,9 @@ def pull_ACE(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshif
         ACE = np.append(ACE,ACE_month)
         uf.status(int((i/12)*100))
 
-    np.save(filepath+'ACE_'+str(year)+'.npy', ACE)
+    np.save(filename, ACE)
     print(str(year)+' finished!')
-    print('File saved to ' + filepath+'ACE_'+str(year)+'.npy')
+    print('File saved to ' + filename)
 
 #Take a 1D array, and return an array where every n entries were averaged together.
 def collapse_down(arr,n):
@@ -65,6 +74,13 @@ def collapse_down(arr,n):
 
 #Pulls a year of ACE magnetic field data, collapses it down to 64 second cadence, and saves it to a file
 def pull_ACE_B(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'):
+    
+    filename = filepath+'ACE_B_'+str(year)+'.npy'
+
+    #Check if file already exists
+    if os.path.exists(filename+'.npy'):
+         print('File '+filename+' already exists! Skipping...')
+         return 1
     
     print('Pulling ACE mfi data from '+str(year) )
     uf.status(0)
@@ -99,12 +115,20 @@ def pull_ACE_B(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timesh
         uf.status(int((i/12)*100))
 
     
-    np.save(filepath+'ACE_B_'+str(year)+'.npy', ACE_B)
+    np.save(filename, ACE_B)
     print(str(year)+' finished!')
-    print('File saved to ' + filepath+'ACE_B_'+str(year)+'.npy')
+    print('File saved to ' + filename)
 
 
 def pull_GOES(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'):
+    
+    filename = filepath+'GOES_'+str(year)+'.npy'
+
+
+    #Check if file already exists
+    if os.path.exists(filename+'.npy'):
+         print('File '+filename+' already exists! Skipping...')
+         return 1
     
     print('Pulling GOES data from '+str(year) )
     uf.status(0)
@@ -150,9 +174,9 @@ def pull_GOES(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshi
         uf.status(int((i/12)*100))
 
     
-    np.save(filepath+'GOES_'+str(year)+'.npy', GOES)
+    np.save(filename, GOES)
     print(str(year)+' finished!')
-    print('File saved to ' + filepath+'ACE_B_'+str(year)+'.npy')
+    print('File saved to ' + filename)
     
 filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/'
 
