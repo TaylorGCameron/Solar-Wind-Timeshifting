@@ -30,7 +30,7 @@ def interval(t1,t2, t):
     return [t_out[0],t_out[-1]]
 
 def calc_time_indices(year, interval_length, dt, filepath = ''):
-    
+    print('Calculating indices for '+str(year))
     filename = filepath+'ACE_indicies_'+str(year)+'.npy'
 
     #Check if file already exists
