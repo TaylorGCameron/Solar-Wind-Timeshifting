@@ -20,7 +20,7 @@ def pull_ACE(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshif
 
 
     #Check if file already exists
-    if os.path.exists(filename+'.npy'):
+    if os.path.exists(filename):
          print('File '+filename+' already exists! Skipping...')
          return 1
     
@@ -78,7 +78,7 @@ def pull_ACE_B(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timesh
     filename = filepath+'ACE_B_'+str(year)+'.npy'
 
     #Check if file already exists
-    if os.path.exists(filename+'.npy'):
+    if os.path.exists(filename):
          print('File '+filename+' already exists! Skipping...')
          return 1
     
@@ -126,7 +126,7 @@ def pull_GOES(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshi
 
 
     #Check if file already exists
-    if os.path.exists(filename+'.npy'):
+    if os.path.exists(filename):
          print('File '+filename+' already exists! Skipping...')
          return 1
     
@@ -158,8 +158,12 @@ def pull_GOES(year, filepath = 'C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshi
             t2 = datetime.datetime(year+1, 1,1)
         #print('Pulling '+str(t1)[0:10] + ' - ' + str(t2)[0:10])
         
-        goes_data = cdas.get_data('sp_phys', GOES_names[GOES_dict[year]][0], t1, t2, GOES_names[GOES_dict[year]][1:])
-        
+        try:
+            goes_data = cdas.get_data('sp_phys', GOES_names[GOES_dict[year]][0], t1, t2, GOES_names[GOES_dict[year]][1:])
+        except:
+            import calendar
+            print('No data found for ' + calendar.month_name[i] + ' ' + str(year))
+            continue
         GOES_month = np.ndarray(len(goes_data['EPOCH']), dtype = GOES_dtype)
         
         GOES_month['pos'] = np.transpose([goes_data['GSE_X'], goes_data['GSE_Y'], goes_data['GSE_Z'], ])
