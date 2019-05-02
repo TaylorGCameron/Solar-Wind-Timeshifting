@@ -14,9 +14,15 @@ import useful_functions as uf
 import os
 
 #Pulls a year of ACE data from the server, cleans it up and saves it to a file.
-def pull_ACE(year, filepath = ''):
+def pull_ACE(year):
     
-    filename = filepath+'ACE_'+str(year)+'.npy'
+    filepath = uf.get_parameter('filepath')
+
+    #check if there's a folder there, if not, make it
+    if not os.path.exists(filepath+'Data/'):
+        os.makedirs(filepath+'Data/')
+    
+    filename = filepath+'Data/ACE_'+str(year)+'.npy'
 
 
     #Check if file already exists
@@ -75,13 +81,20 @@ def collapse_down(arr,n):
 #Pulls a year of ACE magnetic field data, collapses it down to 64 second cadence, and saves it to a file
 def pull_ACE_B(year, filepath = ''):
     
-    filename = filepath+'ACE_B_'+str(year)+'.npy'
+    filepath = uf.get_parameter('filepath')
+
+    #check if there's a folder there, if not, make it
+    if not os.path.exists(filepath+'Data/'):
+        os.makedirs(filepath+'Data/')
+    
+    filename = filepath+'Data/ACE_B_'+str(year)+'.npy'
+
 
     #Check if file already exists
     if os.path.exists(filename):
          print('File '+filename+' already exists! Skipping...')
          return 1
-    
+     
     print('Pulling ACE mfi data from '+str(year) )
     uf.status(0)
 
@@ -122,7 +135,13 @@ def pull_ACE_B(year, filepath = ''):
 
 def pull_GOES(year, filepath = ''):
     
-    filename = filepath+'GOES_'+str(year)+'.npy'
+    filepath = uf.get_parameter('filepath')
+
+    #check if there's a folder there, if not, make it
+    if not os.path.exists(filepath+'Data/'):
+        os.makedirs(filepath+'Data/')
+    
+    filename = filepath+'Data/GOES_'+str(year)+'.npy'
 
 
     #Check if file already exists
@@ -182,9 +201,8 @@ def pull_GOES(year, filepath = ''):
     print(str(year)+' finished!')
     print('File saved to ' + filename)
     
-filepath = uf.get_parameter('filepath')
 
 for i in range(2000, 2010):
-    pull_ACE(i, filepath = filepath)
-    pull_ACE_B(i, filepath = filepath)
-    pull_GOES(i, filepath = filepath)
+    pull_ACE(i)
+    pull_ACE_B(i)
+    pull_GOES(i)

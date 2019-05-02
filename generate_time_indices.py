@@ -15,16 +15,20 @@ import useful_functions as uf
 
 def calc_time_indices(year, interval_length, dt, filepath = ''):
     print('Calculating indices for '+str(year))
-    filename = filepath+'ACE_indices_'+str(year)+'.npy'
+
+    if not os.path.exists(filepath+'Indices/'):
+        os.makedirs(filepath+'Indices/')
+
+    filename = filepath+'Indices/ACE_indices_'+str(year)+'.npy'
 
     #Check if file already exists
     if os.path.exists(filename):
          print('File '+filename+' already exists! Skipping...')
          return 1    
     
-    ACE = np.load(filepath+'ACE_'+str(year)+'.npy') 
-    ACE_B = np.load(filepath+'ACE_B_'+str(year)+'.npy')
-    GOES = np.load(filepath+'GOES_'+str(year)+'.npy')
+    ACE = np.load(filepath+'Data/ACE_'+str(year)+'.npy') 
+    ACE_B = np.load(filepath+'Data/ACE_B_'+str(year)+'.npy')
+    GOES = np.load(filepath+'Data/GOES_'+str(year)+'.npy')
             
     ACE_t = ACE['t'].copy()
     ACE_B_t = ACE_B['t'].copy()

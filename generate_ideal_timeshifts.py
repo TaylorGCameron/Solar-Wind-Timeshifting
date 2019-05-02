@@ -31,24 +31,28 @@ import sys
     
     
 
-def calc_corrs_year(year, interval_length = 2./24., dt = 0.5/24.):
-
+def generate_ideal_timeshifts(year, interval_length = 2./24., dt = 0.5/24.):
+    print('Generating ideal shifts for '+str(year) )
     filepath = uf.get_parameter('filepath')
     
+    if not os.path.exists(filepath+'Ideal_shifts/'):
+        os.makedirs(filepath+'Ideal_shifts/')
+    
     #First, check whether this data file exists already. REPLACE THIS WITH THE CORRECT FILENAME LATER
-    filename = filepath+'filename.npy)'
+    filename = filepath+'Ideal_shifts/ideal_shifts.npy)'
+    
     if os.path.exists(filename+'.npy'):
         print('File '+filename+' already exists! Skipping...')
         return 1
     
     #Load data
-    ACE = np.load(filepath+'ACE_'+str(year)+'.npy') 
-    GOES = np.load(filepath+'GOES_'+str(year)+'.npy')
+    ACE = np.load(filepath+'Data/ACE_'+str(year)+'.npy') 
+    GOES = np.load(filepath+'Data/GOES_'+str(year)+'.npy')
     ACE_t = ACE['t'].copy()
     GOES_t = GOES['t'].copy()
     
-    ACE_i = np.load(filepath+'ACE_indices_'+str(year)+'.npy')
-    GOES_i = np.load(filepath+'GOES_indices_'+str(year)+'.npy')
+    ACE_i = np.load(filepath+'Indices/ACE_indices_'+str(year)+'.npy')
+    GOES_i = np.load(filepath+'Indices/GOES_indices_'+str(year)+'.npy')
     
     #Create an array of start times and end times for each interval       
     start_times = ACE_t[ACE_i][:,0]
@@ -108,16 +112,16 @@ def calc_corrs_year(year, interval_length = 2./24., dt = 0.5/24.):
         
         #Update a progress bar    
         if np.mod(i,200) == 0 and i != 0:
-            print(i, '/',len(start_times) )
+            uf.status(int(float(i)/float(len(start_times))*100))
 
     #At the end, save the list of ideal shifts and correlations.
-    print ('')
+    print('')
     timetaken = time.time() - start
     print(timetaken , ' seconds')
     
     #Package up stuff and save it
     results = np.transpose([ideal_shifts,ideal_corrs])
-    np.save(filepath+'/ideal_shifts_'+str(year)+'.npy',results)
+    np.save(filepath+'Ideal_shifts/ideal_shifts_'+str(year)+'.npy',results)
     
     return 1    
 
@@ -185,3 +189,6 @@ def flat_shift(ACE_i, ACE, GOES_i, GOES):
     
     return shift
     
+for i in range(2000, 2010):
+    #Calculates time indices for 2 hour long intervals each separated by half an hour
+    x = generate_ideal_timeshifts(i)
