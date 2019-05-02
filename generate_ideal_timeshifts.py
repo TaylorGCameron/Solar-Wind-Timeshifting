@@ -24,13 +24,6 @@ import sys
 
 #save best timeshift and associated correlation
 
-
-
-
-
-    
-    
-
 def generate_ideal_timeshifts(year, interval_length = 2./24., dt = 0.5/24.):
     print('Generating ideal shifts for '+str(year) )
     filepath = uf.get_parameter('filepath')
