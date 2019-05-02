@@ -58,7 +58,9 @@ def calc_corrs_year(year, interval_length = 2./24., dt = 0.5/24.):
     corrs = np.zeros([len(start_times), 121])+np.nan 
     extra_shifts = np.arange(-60,61,1)* 60.
     shifts = np.zeros(len(start_times)) + np.nan
+
     ideal_shifts = np.zeros(len(start_times)) + np.nan
+    ideal_corrs = np.zeros(len(start_times)) + np.nan
     
     #Keep track of elapsed time                                                                    
     start = time.time()
@@ -93,22 +95,31 @@ def calc_corrs_year(year, interval_length = 2./24., dt = 0.5/24.):
             corrs[i, j] = shift_correlate(i, ACE_i, ACE_t, ACE, GOES_t_subset, GOES_subset, shifts[i]+extra_shifts[j])
             
         #Now that we have list of correlations for this interval, we take the highest one, and save it and the corresponding timeshift.
-        #Remember to add back the flat timeshift.
-        #INSERT THAT HERE I GUESS
+        #Remember to add back the flat timeshift.  
 
+
+        ideal_corrs[i] = np.nanmax(corrs[i])
+        ideal_shifts[i] = shifts[i]+extra_shifts[np.nanargmax(corrs[i])]
+        
+        #print(shifts[i])
+        #print(np.nanargmax(corrs[i]))
+        #print(extra_shifts[np.nanargmax(corrs[i])])
+        #print('')
         
         #Update a progress bar    
         if np.mod(i,200) == 0 and i != 0:
-        print(i, '/',len(start_times) )
+            print(i, '/',len(start_times) )
 
     #At the end, save the list of ideal shifts and correlations.
-    #print ('')
-    #timetaken = time.time() - start
-    #print(timetaken , ' seconds')
+    print ('')
+    timetaken = time.time() - start
+    print(timetaken , ' seconds')
     
+    #Package up stuff and save it
+    results = np.transpose([ideal_shifts,ideal_corrs])
+    np.save(filepath+'/ideal_shifts_'+str(year)+'.npy',results)
     
-    #np.save(filename,  corrs)
-    
+    return 1    
 
 #Given a time interval at ACE, ACE p data and GOES Bz data and a shift time, 
 #shift the GOES data back to ACE, reinterpolate the data and compute the correlation between the two data sets.
