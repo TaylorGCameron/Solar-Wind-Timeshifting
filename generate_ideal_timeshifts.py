@@ -94,6 +94,12 @@ def generate_ideal_timeshifts(year, interval_length = 2./24., dt = 0.5/24.):
         #Now that we have list of correlations for this interval, we take the highest one, and save it and the corresponding timeshift.
         #Remember to add back the flat timeshift.  
 
+        #If we have nans in the correlation array, abort
+        
+        if np.isnan(corrs[i,0]):
+            ideal_corrs[i] = np.nan
+            ideal_shifts[i] = np.nan
+            continue
 
         ideal_corrs[i] = np.nanmax(corrs[i])
         ideal_shifts[i] = shifts[i]+extra_shifts[np.nanargmax(corrs[i])]
