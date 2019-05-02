@@ -31,11 +31,10 @@ def generate_ideal_timeshifts(year, interval_length = 2./24., dt = 0.5/24.):
     if not os.path.exists(filepath+'Ideal_shifts/'):
         os.makedirs(filepath+'Ideal_shifts/')
     
-    #First, check whether this data file exists already. REPLACE THIS WITH THE CORRECT FILENAME LATER
-    filename = filepath+'Ideal_shifts/ideal_shifts.npy)'
+    #First, check whether this data file exists already. 
     
-    if os.path.exists(filename+'.npy'):
-        print('File '+filename+' already exists! Skipping...')
+    if os.path.exists(filepath+'Ideal_shifts/ideal_shifts_'+str(year)+'.npy'):
+        print('File '+filepath+'Ideal_shifts/ideal_shifts_'+str(year)+'.npy'+' already exists! Skipping...')
         return 1
     
     #Load data
