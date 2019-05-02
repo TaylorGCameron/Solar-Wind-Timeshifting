@@ -18,21 +18,28 @@ import useful_functions as uf
 
 #Modify this so if creates a directory called shifts, then another inside with the name of the method, THEN starts putting the data there
 
-
+#Remember overwrite, which defaults to false
 def calc_timeshifts(method, name, **parameters):
 
-    path = 'C:/Users/Taylor/Google Drive/Science/Data/timeshifting/shifts_toGOES/'
-    year = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009]
-    GOES = [10,10,10,10,12,12,12,12,12,12]
+    filepath = uf.get_parameter('filepath')
+    
+    #Make the shifts directory if it didn't exist
+    if not os.path.exists(filepath+'Shifts/'):
+        os.makedirs(filepath+'Shifts/')
+    
+    #Make the method directory if it didn't exist
+    if not os.path.exists(filepath+'Shifts/'+name+'/'):
+        os.makedirs(filepath+'Shifts/'+name+'/')
+        
+    path = filepath+'Shifts/'+name+'/'
 
-    for i in range(10):
-        print('Starting ', year[i])
-        calc_timeshifts_year(year[i], GOES[i], 2./24., path+str(year[i])+'_'+name+'_shifts', dt = 0.5/24., method = method+'_shift', **parameters)    
+    for i in range(2000,2010):
+        print('Starting ', i)
+        calc_timeshifts_year(i, path+name+'_shifts_'+str(i)+'.npy', method = method+'_shift', **parameters)    
 
     print('Done!') 
 
-def calc_timeshifts_year(year, interval_length = 2./24., filename, dt = 0.5/24., method = 'flat', **parameters):                     
-
+def calc_timeshifts_year(year, filename, method = 'flat', **parameters):                     
     
     start = time.time()    
 
@@ -43,7 +50,7 @@ def calc_timeshifts_year(year, interval_length = 2./24., filename, dt = 0.5/24.,
     
     #First, check whether this data file exists already
     if parameters['overwrite'] == False:
-        if os.path.exists(filename+'.npy'):
+        if os.path.exists(filename):
             print('File '+filename+' already exists! Skipping...')
             return 1
         
@@ -55,18 +62,18 @@ def calc_timeshifts_year(year, interval_length = 2./24., filename, dt = 0.5/24.,
     ACE_B_t = ACE_B['t'].copy()
     GOES_t = GOES['t'].copy()
             
-    shifts = np.zeros(len(A_i)) + np.nan
                                                           
 
     A_i = np.load(filepath+'Indices/ACE_indices_'+str(year)+'.npy')
     Ab_i = np.load(filepath+'Indices/ACE_B_indices_'+str(year)+'.npy')
     G_i = np.load(filepath+'Indices/GOES_indices_'+str(year)+'.npy')
 
-
+    shifts = np.zeros(len(A_i)) + np.nan
       
     if not hasattr(tsm,method):
         print('That method doesnt exist!')
         return -1
+    
     timeshifting_method = getattr(tsm, method)
         
     print('Starting '+ method +' method')
@@ -88,24 +95,39 @@ def calc_timeshifts_year(year, interval_length = 2./24., filename, dt = 0.5/24.,
     
     
 def evaluate_method(method, corr_min, exclude = []):
+
+    filepath = uf.get_parameter('filepath')
+        
     ideal_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts.npy')
     ideal_shifts_corrs = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts_corrs.npy')
     
-
-    years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009]
-    
+    ideals = []    
     shifts = []    
-    
-    for year in years:
-        year_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/shifts_toGOES/'+str(year)+'_'+method+'_shifts.npy')
+    for year in range(2000,2010):
+
+        #ideals_year = np.load(filepath + 'Ideal_shifts/ideal_shifts_'+str(year)+'.npy')
+        #ideals = np.append(ideals, ideals_year)
+
+        year_shifts = np.load(filepath + 'Shifts/'+method+'/'+method+'_shifts_'+str(year)+'.npy')
         shifts = np.append(shifts, year_shifts)
     
+    #ideal_shifts = ideals[:,0]
+    #ideal_shifts_corrs = ideals[:,1]
     
+    #return ideal_shifts, shifts
     deltas =  ideal_shifts - shifts/60.
     
     if exclude != []:
         deltas = np.delete(deltas, exclude)
         ideal_shifts_corrs = np.delete(ideal_shifts_corrs, exclude)
+
+    #Get rid of nans
+    ideal_shifts = ideal_shifts[np.isfinite(deltas)]
+    ideal_shifts_corrs = ideal_shifts_corrs[np.isfinite(deltas)]
+    shifts = shifts[np.isfinite(deltas)]
+    deltas = deltas[np.isfinite(deltas)]
+
+    #Get rid of other things
     deltas = deltas[ideal_shifts_corrs > corr_min]
     deltas = deltas[deltas < 40]
     deltas = deltas[deltas > -40]    
@@ -133,3 +155,5 @@ def evaluate_method(method, corr_min, exclude = []):
     print('')
     print('')
     return width, deltas
+
+evaluate_method('flat', 0.3)

@@ -37,7 +37,7 @@ def flat_shift(*kargs, **parameters):
     if A1 == -1 or G1 == -1:
         return np.nan    
     
-    v = ACE['v'][A1:A2]
+    vx = ACE['v'][A1:A2,0]
     ax = ACE['pos'][A1:A2,0]
     
     if parameters['target'] == 'GOES':
@@ -47,13 +47,15 @@ def flat_shift(*kargs, **parameters):
     else:
         gx = 0.
     
-    vel_av = np.nanmean(v)
-    delta_x_av = np.nanmean(ax) - np.nanmean(gx)
+    vel_x_av = np.nanmean(vx)
+    delta_x_av = np.nanmean(gx) - np.nanmean(ax)
     
-    shift = delta_x_av/vel_av
+    shift = delta_x_av/vel_x_av
     
     return shift  
     
+
+#Maybe revamp this to take advantage of vy and vz
 def front_angle_shift(*kargs, **parameters):
     """
     Calculate a delay time (s) between GOES and ACE assuming phase fronts oriented 
@@ -83,7 +85,7 @@ def front_angle_shift(*kargs, **parameters):
     if A1 == -1 or G1 == -1:
         return np.nan
     
-    v = ACE['v'][A1:A2]
+    v = ACE['v'][A1:A2,0]
     ax = ACE['pos'][A1:A2,0]
     ay = ACE['pos'][A1:A2,1]
     
@@ -97,8 +99,8 @@ def front_angle_shift(*kargs, **parameters):
         gx = 0
         gy = 0
     vel_av = np.nanmean(v)
-    delta_x_av = np.nanmean(ax) - np.nanmean(gx)
-    delta_y_av = np.nanmean(ay) - np.nanmean(gy)
+    delta_x_av = np.nanmean(gx) - np.nanmean(ax)
+    delta_y_av = np.nanmean(gy) - np.nanmean(ay)
     
     shift = delta_x_av/vel_av + (delta_y_av*np.tan(uf.deg2rad(parameters['angle']))/vel_av)
     
@@ -142,7 +144,7 @@ def front_normal_shift(*kargs, **parameters):
     n_norm = n/np.linalg.norm(n)
     
     delta_pos = gpos - apos
-    vel_av = np.array([-1*np.nanmean(v),0,0])
+    vel_av = np.nanmean(v, axis = 0)
     
     shift = np.dot(n_norm,delta_pos)/np.dot(n_norm, vel_av)
     
@@ -178,6 +180,11 @@ def MVAB0_shift(*kargs, **parameters):
     P = np.zeros([3,3])
     if Ab1 == -1:
         return np.nan
+    
+    #check if B is all nans
+    if np.isnan(ACE_B['B'][Ab1:Ab2,0]).all():
+        return np.nan
+    
     B_av = np.array([np.nanmean(ACE_B['B'][Ab1:Ab2,0]), np.nanmean(ACE_B['B'][Ab1:Ab2,1]),np.nanmean(ACE_B['B'][Ab1:Ab2,2])])
     e = B_av/np.sqrt(B_av[0]**2+B_av[1]**2+B_av[2]**2)
     #Create a covariance matrix
@@ -243,6 +250,9 @@ def MVAB_shift(*kargs, **parameters):
     if Ab1 == -1:
         return np.nan
     
+    if np.isnan(ACE_B['B'][Ab1:Ab2,0]).all():
+        return np.nan
+    
     M = np.zeros([3,3])
     
     #Create a covariance matrix
@@ -301,14 +311,17 @@ def cross_product_shift(*kargs, **parameters):
     
     if Ab1 == -1:
         return np.nan    
+    
+    if np.isnan(ACE_B['B'][Ab1:Ab2,0]).all():
+        return np.nan
   
     B = ACE_B['B'][Ab1:Ab2] 
 
-    center = len(B)/2
+    center = len(B)//2
 
-    B_b = np.nanmean(B[center - parameters['dist'] -parameters['size']/2: center -parameters['dist']+ parameters['size']/2],0)
+    B_b = np.nanmean(B[center - parameters['dist'] -parameters['size']//2: center -parameters['dist']+ parameters['size']//2],0)
     
-    B_a = np.nanmean(B[center + parameters['dist'] -parameters['size']/2: center + parameters['dist']+ parameters['size']/2],0)
+    B_a = np.nanmean(B[center + parameters['dist'] -parameters['size']//2: center + parameters['dist']+ parameters['size']//2],0)
     
     if np.isnan(B_b[0]):
         return np.nan
@@ -348,7 +361,10 @@ def jackel_shift(*kargs, **parameters):
     
     if A1 == -1 or G1 == -1 or Ab1 == -1:
         return np.nan    
-      
+    
+    if np.isnan(ACE_B['B'][Ab1:Ab2,0]).all():
+        return np.nan
+    
     Bx = np.nanmean(np.nanmean(ACE_B['B'][A1:A2,0]))
     By = np.nanmean(np.nanmean(ACE_B['B'][A1:A2,1]))
 
@@ -382,6 +398,8 @@ def empirical_shift (*kargs, **parameters):
     if A1 == -1 or G1 == -1 or Ab1 == -1:
         return np.nan       
     
+    if np.isnan(ACE_B['B'][Ab1:Ab2,0]).all():
+        return np.nan
     
     Bx = np.nanmean(np.nanmean(ACE_B['B'][Ab1:Ab2,0]))
     By = np.nanmean(np.nanmean(ACE_B['B'][Ab1:Ab2,1]))
@@ -425,7 +443,9 @@ def empirical_2_shift (*kargs, **parameters):
     
     if A1 == -1 or G1 == -1 or Ab1 == -1:
         return np.nan       
-    
+
+    if np.isnan(ACE_B['B'][Ab1:Ab2,0]).all():
+        return np.nan    
     
     Bx = np.nanmean(np.nanmean(ACE_B['B'][Ab1:Ab2,0]))
     By = np.nanmean(np.nanmean(ACE_B['B'][Ab1:Ab2,1]))
@@ -448,109 +468,109 @@ def empirical_2_shift (*kargs, **parameters):
 
 
 
-
-def nn_shift(*kargs, **parameters):
-    """
-
-   """   
-   
-    #List out the parameters that matter    
-    plist= ['target']
-    #Add in the defaults
-    if not 'target' in parameters:
-        parameters['target']  = 'GOES'
-    #This lists out the parameter values if asked.
-    if len(kargs) == 0 :
-        for p in plist:
-            print(p+' = '+str(parameters[p]))
-        return 1
-            
-    
-    A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7];ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
-    
-    if A1 == -1 or G1 == -1:
-        return np.nan    
-    
-    v = np.nanmean(ACE['v'][A1:A2])
-    a_pos_x = np.nanmean(ACE['pos'][A1:A2], axis = 0)[0]
-    a_pos_y = np.nanmean(ACE['pos'][A1:A2], axis = 0)[1]
-    a_pos_z = np.nanmean(ACE['pos'][A1:A2], axis = 0)[2]
-    
-    a_Bx = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[0]
-    a_By = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[1]
-    a_Bz = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[2]
-    
-    
-    a_pos_x = a_pos_x/6376./200
-    a_pos_y = a_pos_y/6376./200
-    a_pos_z = a_pos_z/6376./200
-
-    a_Bx = a_Bx/5
-    a_By = a_By/5
-    a_Bz = a_Bz/5
-    v = v/400
-    
-    inp =np.array([v, a_pos_x,a_pos_y,a_pos_z, a_Bx, a_By, a_Bz])
-    
-    shift = calc_model(parameters['w'], inp)*60*60.
-    
-    #1/0
-    
-    return shift  
-
-def ensemble_nn_shift(*kargs, **parameters):
-    """
-
-   """   
-   
-    #List out the parameters that matter    
-    plist= ['target']
-    #Add in the defaults
-    if not 'target' in parameters:
-        parameters['target']  = 'GOES'
-    #This lists out the parameter values if asked.
-    if len(kargs) == 0 :
-        for p in plist:
-            print(p+' = '+str(parameters[p]))
-        return 1
-            
-    
-    A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7];ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
-    
-    if A1 == -1 or G1 == -1:
-        return np.nan    
-    
-    v = np.nanmean(ACE['v'][A1:A2])
-    a_pos_x = np.nanmean(ACE['pos'][A1:A2], axis = 0)[0]
-    a_pos_y = np.nanmean(ACE['pos'][A1:A2], axis = 0)[1]
-    a_pos_z = np.nanmean(ACE['pos'][A1:A2], axis = 0)[2]
-    
-    a_Bx = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[0]
-    a_By = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[1]
-    a_Bz = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[2]
-    
-
-    
-    a_pos_x = a_pos_x/6376./200
-    a_pos_y = a_pos_y/6376./200
-    a_pos_z = a_pos_z/6376./200
-
-    a_Bx = a_Bx/5
-    a_By = a_By/5
-    a_Bz = a_Bz/5
-    v = v/400
-    
-    inp =np.array([v, a_pos_x,a_pos_y,a_pos_z, a_Bx, a_By, a_Bz])
-    
-    n = len(parameters['w'])
-    shift = 0
-    for i in range(n):
-        shift = shift + (calc_model(parameters['w'][i], inp)*60*60.)
-    
-    shift = shift/n
-    #1/0
-    
-    return shift  
+#NN SHIT TO BE DETERMINED
+#def nn_shift(*kargs, **parameters):
+#    """
+#
+#   """   
+#   
+#    #List out the parameters that matter    
+#    plist= ['target']
+#    #Add in the defaults
+#    if not 'target' in parameters:
+#        parameters['target']  = 'GOES'
+#    #This lists out the parameter values if asked.
+#    if len(kargs) == 0 :
+#        for p in plist:
+#            print(p+' = '+str(parameters[p]))
+#        return 1
+#            
+#    
+#    A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7];ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
+#    
+#    if A1 == -1 or G1 == -1:
+#        return np.nan    
+#    
+#    v = np.nanmean(ACE['v'][A1:A2])
+#    a_pos_x = np.nanmean(ACE['pos'][A1:A2], axis = 0)[0]
+#    a_pos_y = np.nanmean(ACE['pos'][A1:A2], axis = 0)[1]
+#    a_pos_z = np.nanmean(ACE['pos'][A1:A2], axis = 0)[2]
+#    
+#    a_Bx = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[0]
+#    a_By = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[1]
+#    a_Bz = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[2]
+#    
+#    
+#    a_pos_x = a_pos_x/6376./200
+#    a_pos_y = a_pos_y/6376./200
+#    a_pos_z = a_pos_z/6376./200
+#
+#    a_Bx = a_Bx/5
+#    a_By = a_By/5
+#    a_Bz = a_Bz/5
+#    v = v/400
+#    
+#    inp =np.array([v, a_pos_x,a_pos_y,a_pos_z, a_Bx, a_By, a_Bz])
+#    
+#    shift = calc_model(parameters['w'], inp)*60*60.
+#    
+#    #1/0
+#    
+#    return shift  
+#
+#def ensemble_nn_shift(*kargs, **parameters):
+#    """
+#
+#   """   
+#   
+#    #List out the parameters that matter    
+#    plist= ['target']
+#    #Add in the defaults
+#    if not 'target' in parameters:
+#        parameters['target']  = 'GOES'
+#    #This lists out the parameter values if asked.
+#    if len(kargs) == 0 :
+#        for p in plist:
+#            print(p+' = '+str(parameters[p]))
+#        return 1
+#            
+#    
+#    A1 = kargs[0];A2 = kargs[1];Ab1 = kargs[2];Ab2 = kargs[3];G1 = kargs[4];G2 = kargs[5];ACE_t = kargs[6];ACE = kargs[7];ACE_B_t = kargs[8];ACE_B = kargs[9];GOES_t = kargs[10];GOES = kargs[11]; 
+#    
+#    if A1 == -1 or G1 == -1:
+#        return np.nan    
+#    
+#    v = np.nanmean(ACE['v'][A1:A2])
+#    a_pos_x = np.nanmean(ACE['pos'][A1:A2], axis = 0)[0]
+#    a_pos_y = np.nanmean(ACE['pos'][A1:A2], axis = 0)[1]
+#    a_pos_z = np.nanmean(ACE['pos'][A1:A2], axis = 0)[2]
+#    
+#    a_Bx = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[0]
+#    a_By = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[1]
+#    a_Bz = np.nanmean(ACE_B['B'][A1:A2], axis = 0)[2]
+#    
+#
+#    
+#    a_pos_x = a_pos_x/6376./200
+#    a_pos_y = a_pos_y/6376./200
+#    a_pos_z = a_pos_z/6376./200
+#
+#    a_Bx = a_Bx/5
+#    a_By = a_By/5
+#    a_Bz = a_Bz/5
+#    v = v/400
+#    
+#    inp =np.array([v, a_pos_x,a_pos_y,a_pos_z, a_Bx, a_By, a_Bz])
+#    
+#    n = len(parameters['w'])
+#    shift = 0
+#    for i in range(n):
+#        shift = shift + (calc_model(parameters['w'][i], inp)*60*60.)
+#    
+#    shift = shift/n
+#    #1/0
+#    
+#    return shift  
 
 def const_shift(*kargs, **parameters):
     """
@@ -599,7 +619,7 @@ def front_normal_shift_internal(A1, A2, G1, G2, ACE_t, ACE, GOES_t, GOES,n, **pa
     n_norm = n/np.linalg.norm(n)
     
     delta_pos = gpos - apos
-    vel_av = np.array([-1*np.nanmean(v),0,0])
+    vel_av = np.nanmean(v, axis = 0)
     
     shift = np.dot(n_norm,delta_pos)/np.dot(n_norm, vel_av)
     
@@ -617,7 +637,7 @@ def front_angle_shift_internal(A1, A2, G1, G2, ACE_t, ACE, GOES_t, GOES, angle, 
     if A1 == -1 or G1 == -1:
         return np.nan
     
-    v = ACE['v'][A1:A2]
+    v = ACE['v'][A1:A2,0]
     ax = ACE['pos'][A1:A2,0]
     ay = ACE['pos'][A1:A2,1]
     
@@ -631,30 +651,32 @@ def front_angle_shift_internal(A1, A2, G1, G2, ACE_t, ACE, GOES_t, GOES, angle, 
         gx = 0
         gy = 0
     vel_av = np.nanmean(v)
-    delta_x_av = np.nanmean(ax) - np.nanmean(gx)
-    delta_y_av = np.nanmean(ay) - np.nanmean(gy)
+    delta_x_av = np.nanmean(gx) - np.nanmean(ax)
+    delta_y_av = np.nanmean(gy) - np.nanmean(ay)
     
     shift = delta_x_av/vel_av + (delta_y_av*np.tan(uf.deg2rad(angle))/vel_av)
     
     return shift 
 
-def calc_model(w, input_arr):
-    n = len(w)
-    if n == 2:
-        nodes = np.tanh((np.dot(input_arr, w[0][0])+w[0][1]))
-        output = (np.dot(nodes, w[n-1][0])+w[n-1][1])
-        return output
-    if n == 1:
-        output = (np.dot(input_arr, w[n-1][0])+w[n-1][1])
-        return output
-        
-    
-    nodes = np.tanh((np.dot(input_arr, w[0][0])+w[0][1]))
 
-    for i in np.arange(1,n-1):
-        
-        nodes = np.tanh((np.dot(nodes, w[i][0])+w[i][1]))
-        
-    output = (np.dot(nodes, w[n-1][0])+w[n-1][1])
-    
-    return output
+#DOES NOT WORK YET
+#def calc_model(w, input_arr):
+#    n = len(w)
+#    if n == 2:
+#        nodes = np.tanh((np.dot(input_arr, w[0][0])+w[0][1]))
+#        output = (np.dot(nodes, w[n-1][0])+w[n-1][1])
+#        return output
+#    if n == 1:
+#        output = (np.dot(input_arr, w[n-1][0])+w[n-1][1])
+#        return output
+#        
+#    
+#    nodes = np.tanh((np.dot(input_arr, w[0][0])+w[0][1]))
+#
+#    for i in np.arange(1,n-1):
+#        
+#        nodes = np.tanh((np.dot(nodes, w[i][0])+w[i][1]))
+#        
+#    output = (np.dot(nodes, w[n-1][0])+w[n-1][1])
+#    
+#    return output
