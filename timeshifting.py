@@ -6,17 +6,12 @@ Created on Tue Dec 20 13:07:51 2016
 """
 
 import os
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 import matplotlib.dates as mdate
 import scipy
-import scipy.interpolate
-import scipy.stats
 import datetime
-import sys
-from numpy import linalg as LA
 from scipy.optimize import curve_fit
 import timeshifting_methods as tsm
 import useful_functions as uf
