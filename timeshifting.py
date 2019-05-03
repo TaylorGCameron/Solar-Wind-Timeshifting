@@ -41,7 +41,7 @@ def calc_timeshifts(method, name, **parameters):
 
 def calc_timeshifts_year(year, filename, method = 'flat', **parameters):                     
     
-    start = time.time()    
+    start = time.time()
 
     filepath = uf.get_parameter('filepath')
     
@@ -98,24 +98,24 @@ def evaluate_method(method, corr_min, exclude = []):
 
     filepath = uf.get_parameter('filepath')
         
-    ideal_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts.npy')
-    ideal_shifts_corrs = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts_corrs.npy')
+    #ideal_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts.npy')
+    #ideal_shifts_corrs = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts_corrs.npy')
     
-    ideals = []    
-    shifts = []    
+    ideals = np.zeros([0,2])    
+    shifts = np.array([])
     for year in range(2000,2010):
 
-        #ideals_year = np.load(filepath + 'Ideal_shifts/ideal_shifts_'+str(year)+'.npy')
-        #ideals = np.append(ideals, ideals_year)
+        ideals_year = np.load(filepath + 'Ideal_shifts/ideal_shifts_'+str(year)+'.npy')
+        ideals = np.append(ideals, ideals_year, axis = 0)
 
         year_shifts = np.load(filepath + 'Shifts/'+method+'/'+method+'_shifts_'+str(year)+'.npy')
         shifts = np.append(shifts, year_shifts)
     
-    #ideal_shifts = ideals[:,0]
-    #ideal_shifts_corrs = ideals[:,1]
+    ideal_shifts = ideals[:,0]
+    ideal_shifts_corrs = ideals[:,1]
     
     #return ideal_shifts, shifts
-    deltas =  ideal_shifts - shifts/60.
+    deltas =  (ideal_shifts - shifts)/60.
     
     if exclude != []:
         deltas = np.delete(deltas, exclude)
