@@ -15,9 +15,12 @@ import time
 
 
 
-def generate_ideal_timeshifts(year, interval_length = 2./24., dt = 0.5/24.):
+def generate_ideal_timeshifts(year):
     print('Generating ideal shifts for '+str(year) )
     filepath = uf.get_parameter('filepath')
+    
+    interval_length = eval(uf.get_parameter('interval_length'))
+    dt = eval(uf.get_parameter('dt'))
     
     if not os.path.exists(filepath+'Ideal_shifts/'):
         os.makedirs(filepath+'Ideal_shifts/')
