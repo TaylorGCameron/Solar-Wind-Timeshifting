@@ -2,6 +2,8 @@
 """
 Created on Tue Dec 20 13:07:51 2016
 
+Library of functions used to calculate and evaluate timeshifting methods
+
 @author: Taylor
 """
 
@@ -10,8 +12,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import matplotlib.dates as mdate
-import scipy
-import datetime
 from scipy.optimize import curve_fit
 import timeshifting_methods as tsm
 import useful_functions as uf
@@ -20,7 +20,19 @@ import useful_functions as uf
 
 #Remember overwrite, which defaults to false
 def calc_timeshifts(method, name, **parameters):
+    '''
+    Given the name of a defined timeshifting method, calculate timeshifts
+    for every time interval from 2000 to 2009, and save to a named directory.
 
+    Arguments:
+        method(string) -- Name of the timeshifting method to be used
+        name('string') -- Name of the folder to save files to
+        Other parameters specific to individual timeshifting methods
+
+    Returns:
+        int: Correlation between ACE dynamic pressure and the shifted GOES Bz data
+    '''    
+    
     filepath = uf.get_parameter('filepath')
     
     #Make the shifts directory if it didn't exist
@@ -40,6 +52,21 @@ def calc_timeshifts(method, name, **parameters):
     print('Done!') 
 
 def calc_timeshifts_year(year, filename, method = 'flat', **parameters):                     
+    '''
+    Given a year, a defined timeshifting method, and a filename, calculate timeshifts
+    for every time interval in that year, and save to a file..
+
+    Arguments:
+        year(int) -- The year to compute timeshifts for
+        filename(string) -- The name of the file to save the timeshifts to
+        Other parameters specific to individual timeshifting methods
+
+    Keyword Arguments:
+        method(string) -- Method for which timeshifts are calculated (default: 'flat)'
+    
+    Returns:
+        int: Correlation between ACE dynamic pressure and the shifted GOES Bz data
+    '''    
     
     start = time.time()
 
@@ -95,7 +122,20 @@ def calc_timeshifts_year(year, filename, method = 'flat', **parameters):
     
     
 def evaluate_method(method, corr_min, exclude = []):
+    '''
+    Compare the timeshifts for a given method to ideal timeshifts, and plot a histogram of the differences.
+    Also lists the width and center of the resulting histogram.
 
+    Arguments:
+        method(string) -- The timeshifting method to evaluae
+        corr_min(float) -- Minimum correlation to accept ideal timeshifts for.
+        
+    Keyword Arguments:
+        exclude(list) -- A list of indices corresponding to intervals to exclude from the analysis
+    
+    Returns:
+        int, int: The width of the error histogram, the center of the error histogram.
+    '''    
     filepath = uf.get_parameter('filepath')
         
     #ideal_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts.npy')
