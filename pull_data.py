@@ -2,6 +2,9 @@
 """
 Created on Tue Apr 30 12:51:22 2019
 
+When directly run, pulls ACE swe and mfi data, and GOES data from 2000 to 2009 
+from CDAWeb and stores it in files in a location specified in config.par.
+
 @author: Taylor
 """
 
@@ -13,9 +16,16 @@ from ai import cdas
 import useful_functions as uf
 import os
 
-#Pulls a year of ACE data from the server, cleans it up and saves it to a file.
 def pull_ACE(year):
+    '''
+    Pull a year of ACE SWE data from CDAWeb, clean it, and store it in a location specified in config.par
     
+    Arguments:
+        year(int) -- The year for which data will be pulled
+        
+    Returns:
+        int: Function finished indicator
+    '''
     filepath = uf.get_parameter('filepath')
 
     #check if there's a folder there, if not, make it
@@ -73,13 +83,24 @@ def pull_ACE(year):
     np.save(filename, ACE)
     print(str(year)+' finished!')
     print('File saved to ' + filename)
+    return 1
 
 #Take a 1D array, and return an array where every n entries were averaged together.
 def collapse_down(arr,n):
+    '''Average every n elements of an array (arr), returning a smaller array of length/n'''
     return np.mean(arr[:(len(arr)//n)*n].reshape(-1,n), axis=1)
 
 #Pulls a year of ACE magnetic field data, collapses it down to 64 second cadence, and saves it to a file
 def pull_ACE_B(year, filepath = ''):
+    '''
+    Pull a year of ACE MFI data from CDAWeb, clean it, and store it in a location specified in config.par
+    
+    Arguments:
+        year(int) -- The year for which data will be pulled
+        
+    Returns:
+        int: Function finished indicator
+    '''
     
     filepath = uf.get_parameter('filepath')
 
@@ -134,7 +155,18 @@ def pull_ACE_B(year, filepath = ''):
 
 
 def pull_GOES(year, filepath = ''):
+    def pull_ACE(year):
+    '''
+    Pull a year of GOES data from CDAWeb, clean it, and store it in a location specified in config.par. 
     
+    Which GOES satellite data comes from depends on the year. 2000-2003 pulls GOES 10, 2003-2009 pulls GOES12.
+    
+    Arguments:
+        year(int) -- The year for which data will be pulled
+        
+    Returns:
+        int: Function finished indicator
+    '''
     filepath = uf.get_parameter('filepath')
 
     #check if there's a folder there, if not, make it
