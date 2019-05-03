@@ -195,5 +195,3 @@ def evaluate_method(method, corr_min, exclude = []):
     print('')
     print('')
     return width, deltas
-
-evaluate_method('flat', 0.3)

@@ -2,6 +2,8 @@
 """
 Created on Wed Jan 11 14:32:07 2017
 
+This file contains all the timeshifting methods. All have the same inputs.
+
 @author: Taylor
 """
 import numpy as np
