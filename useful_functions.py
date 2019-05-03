@@ -52,11 +52,13 @@ def interval(t1,t2, t):
 #Goes through some text and finds the value associated with some keyword. 
 #keywords and values are separated by an = sign, so we have "keyword = value".
 def get_keyword(text, keyword):
+    '''Search a string for a keyword, and return what comes after it until a newline '''
     ind1 = text.find(keyword)
     ind2 = text[ind1:].find('\n') + ind1
     return text[ind1:ind2][text[ind1:ind2].find('=')+1:].replace(' ','')
 
 def get_parameter(keyword):
+    'Search config.par for a keyword and return the associated string'
     f = open('config.par')
     pars= f.read()
     f.close()
