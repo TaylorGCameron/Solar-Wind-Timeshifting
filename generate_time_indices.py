@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Dec 20 12:02:20 2016
-This is gonna create an interval index list for use in speeding up timeshift calculations
+
+Creates a set of interval indices for each data set. These interval indices allow
+for quick lookup of successive data intervals of some length (2 hours by default),
+separated by some time (half an hour by default).
+
 @author: Taylor
 """
 
@@ -13,7 +17,24 @@ import useful_functions as uf
 
 
 
-def calc_time_indices(year, interval_length, dt, filepath = ''):
+def calc_time_indices(year):
+    '''
+    Create and save to file three lists of indices for one year, for ACE swe, ACE mfi, and GOES.
+    The indices define time intervals separated by a time dt, of length interval_length. 
+    (These are defined in config.par)
+    
+    Arguments:
+        year(int) -- The year for which indices will be calculated
+        
+    Returns:
+        int: Function finished indicator
+    '''
+    
+    filepath = uf.get_parameter('filepath')    
+
+    interval_length = eval(uf.get_parameter('interval_length'))
+    dt = eval(uf.get_parameter('dt'))
+
     print('Calculating indices for '+str(year))
 
     if not os.path.exists(filepath+'Indices/'):
@@ -78,8 +99,6 @@ def calc_time_indices(year, interval_length, dt, filepath = ''):
     print('')
     return 1
     
-filepath = uf.get_parameter('filepath')    
-
 for i in range(2000, 2010):
     #Calculates time indices for 2 hour long intervals each separated by half an hour
-    x = calc_time_indices(i, 2./24., 0.5/24., filepath = filepath)
+    x = calc_time_indices(i, 2./24., 0.5/24.)
