@@ -2,6 +2,8 @@
 """
 Created on Wed May  1 14:17:03 2019
 
+
+
 @author: Taylor
 """
 import numpy as np
@@ -9,20 +11,9 @@ import useful_functions as uf
 import os
 import scipy.stats
 import scipy
-#import matplotlib.dates as mdate
 import time
-import sys
 
-#Load ACE and GOES data
-#Load interval list
 
-#for each year...
-
-#grab an interval, calculate a flat timeshift as a baseline.
-
-#try intervals within 60 mins of flat shift, cross-correlate
-
-#save best timeshift and associated correlation
 
 def generate_ideal_timeshifts(year, interval_length = 2./24., dt = 0.5/24.):
     print('Generating ideal shifts for '+str(year) )
