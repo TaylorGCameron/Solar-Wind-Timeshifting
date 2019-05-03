@@ -155,7 +155,6 @@ def pull_ACE_B(year, filepath = ''):
 
 
 def pull_GOES(year, filepath = ''):
-    def pull_ACE(year):
     '''
     Pull a year of GOES data from CDAWeb, clean it, and store it in a location specified in config.par. 
     
