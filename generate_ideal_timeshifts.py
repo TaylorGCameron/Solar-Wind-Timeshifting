@@ -2,7 +2,8 @@
 """
 Created on Wed May  1 14:17:03 2019
 
-
+Generate a list of ideal (correct) timeshifts generated from cross-correlating
+ACE solar wind dynamic pressure and GOES Bz
 
 @author: Taylor
 """
@@ -16,11 +17,21 @@ import time
 
 
 def generate_ideal_timeshifts(year):
+    '''
+    Generate and dave a list of ideal (correct) timeshifts generated from cross-correlating
+ACE solar wind dynamic pressure and GOES Bz for one year.
+
+    Arguments:
+        year(int) -- The year for which ideal timeshifts will be calculated
+        
+    Returns:
+        int: Function finished indicator
+    '''
     print('Generating ideal shifts for '+str(year) )
     filepath = uf.get_parameter('filepath')
     
-    interval_length = eval(uf.get_parameter('interval_length'))
-    dt = eval(uf.get_parameter('dt'))
+#   interval_length = eval(uf.get_parameter('interval_length'))
+#    dt = eval(uf.get_parameter('dt'))
     
     if not os.path.exists(filepath+'Ideal_shifts/'):
         os.makedirs(filepath+'Ideal_shifts/')
@@ -97,11 +108,6 @@ def generate_ideal_timeshifts(year):
         ideal_corrs[i] = np.nanmax(corrs[i])
         ideal_shifts[i] = shifts[i]+extra_shifts[np.nanargmax(corrs[i])]
         
-        #print(shifts[i])
-        #print(np.nanargmax(corrs[i]))
-        #print(extra_shifts[np.nanargmax(corrs[i])])
-        #print('')
-        
         #Update a progress bar    
         if np.mod(i,200) == 0 and i != 0:
             uf.status(int(float(i)/float(len(start_times))*100))
@@ -117,9 +123,26 @@ def generate_ideal_timeshifts(year):
     
     return 1    
 
-#Given a time interval at ACE, ACE p data and GOES Bz data and a shift time, 
-#shift the GOES data back to ACE, reinterpolate the data and compute the correlation between the two data sets.
+#
 def shift_correlate(i, ACE_i, ACE_t, ACE, GOES_t, GOES, shift):
+    '''
+        Given a time interval at ACE, ACE p data and GOES Bz data and a shift time, 
+        shift the GOES data back to ACE, reinterpolate the data and compute the correlation
+        between the two data sets.
+
+    Arguments:
+        i(int) -- Interval number to be shifted
+        ACE_i(array) -- list of ACE time interval indices
+        ACE_t(array) -- list of ACE data time stamps
+        ACE(array) -- All ACE data
+        GOES_t(array) --list of GOES data time stamps
+        GOES(array) -- All GOES data
+        shift(array) -- Time GOES data will be shifted by (in seconds)
+        
+    Returns:
+        int: Correlation between ACE dynamic pressure and the shifted GOES Bz data
+    '''
+    
     #Make sure the timeshift given is actually a number. If not, return nan.
     if np.isnan(shift):
         return np.nan
@@ -165,7 +188,19 @@ def shift_correlate(i, ACE_i, ACE_t, ACE, GOES_t, GOES, shift):
     return corr
 
 def flat_shift(ACE_i, ACE, GOES_i, GOES):
-
+    '''
+    Calculate the flat timeshift from ACE to GOES for some set of ACE and GOES data.
+    The ACE and GOES data provided should be a subset of the whole year.
+    
+    Arguments:
+        ACE_i(array) -- list of ACE time interval indices
+        ACE(array) -- ACE data
+        GOES_i(array) --list of GOES time interval indices
+        GOES(array) -- GOES data
+        
+    Returns:
+        int: Correlation between ACE dynamic pressure and the shifted GOES Bz data
+    '''
     [At1, At2] = ACE_i
     [Gt1, Gt2] = GOES_i
     
