@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+python pull_data.py
+python generate_time_indices.py
+python generate_ideal_timeshifts.py
