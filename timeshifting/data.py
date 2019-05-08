@@ -15,6 +15,7 @@ from ai import cdas
 import timeshifting.useful_functions as uf
 import os
 import scipy.stats
+import time
 
 
 def pull_ACE(year):
@@ -381,7 +382,7 @@ ACE solar wind dynamic pressure and GOES Bz for one year.
         if len(GOES['B'][Gt1:Gt2,2][np.isfinite(GOES['B'][Gt1:Gt2,2])]) < 20:
             continue 
         #Calculate the flat timeshift as a baseline
-        shifts[i] = flat_shift(ACE_i[i], ACE, GOES_i[i], GOES)
+        shifts[i] = _flat_shift(ACE_i[i], ACE, GOES_i[i], GOES)
         
         #For GOES, supply only a subset of data to save on time. 
         #We are looking at intervals within an hour of the flat timeshift.
@@ -487,7 +488,7 @@ def shift_correlate(i, ACE_i, ACE_t, ACE, GOES_t, GOES, shift):
 
     return corr
 
-def flat_shift(ACE_i, ACE, GOES_i, GOES):
+def _flat_shift(ACE_i, ACE, GOES_i, GOES):
     '''
     Calculate the flat timeshift from ACE to GOES for some set of ACE and GOES data.
     The ACE and GOES data provided should be a subset of the whole year.
