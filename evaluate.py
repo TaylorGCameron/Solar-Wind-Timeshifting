@@ -5,11 +5,11 @@ Created on Thu Jan 12 11:00:00 2017
 @author: Taylor
 """
 import time
-import timeshifting.timeshifting as ts
+import timeshifting as ts
 start = time.time()
 o = False
 
-ts.calc_timeshifts('flat', 'flat', overwrite = True)
+ts.calc_timeshifts('flat', 'flat', overwrite = False)
 
 ts.calc_timeshifts('MVAB0', 'MVAB0r5', ratio = 5, overwrite = o)
 ts.calc_timeshifts('MVAB0', 'MVAB0r2', ratio = 2, overwrite = o)

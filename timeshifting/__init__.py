@@ -1,1 +1,1 @@
-import timeshifting
+from .timeshifting import *
