@@ -8,7 +8,7 @@ This file contains all the timeshifting methods. All have the same inputs.
 """
 import numpy as np
 from numpy import linalg as LA
-import useful_functions as uf
+import timeshifting.useful_functions as uf
 
 ###############################################################################
 #All timeshifting methods

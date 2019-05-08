@@ -10,7 +10,7 @@ import matplotlib.dates as mdate
 import os
 import datetime
 import scipy.stats
-import useful_functions as uf
+import timeshifting.useful_functions as uf
 
 
 

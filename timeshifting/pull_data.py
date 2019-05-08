@@ -13,7 +13,7 @@ import matplotlib.dates as mdate
 import datetime
 #import json # for pretty output
 from ai import cdas
-import useful_functions as uf
+import timeshifting.useful_functions as uf
 import os
 
 def pull_ACE(year):

@@ -13,8 +13,8 @@ import numpy as np
 import time
 import matplotlib.dates as mdate
 from scipy.optimize import curve_fit
-import timeshifting_methods as tsm
-import useful_functions as uf
+import timeshifting.methods as tsm
+import timeshifting.useful_functions as uf
 
 #Modify this so if creates a directory called shifts, then another inside with the name of the method, THEN starts putting the data there
 

@@ -5,8 +5,9 @@ Created on Tue May  7 18:07:35 2019
 @author: Taylor
 """
 
-import data.pull_data as pull
-import data.process_data as process
+#import timeshifting as ts
+import timeshifting.pull_data as pull
+import timeshifting.process_data as process
 
 #Pull Data from CDAWeb
 for i in range(2000, 2010):
