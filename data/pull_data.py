@@ -231,9 +231,3 @@ def pull_GOES(year, filepath = ''):
     np.save(filename, GOES)
     print(str(year)+' finished!')
     print('File saved to ' + filename)
-    
-
-for i in range(2000, 2010):
-    pull_ACE(i)
-    pull_ACE_B(i)
-    pull_GOES(i)
