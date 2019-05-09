@@ -32,6 +32,7 @@ def pull_data():
         pull_ACE_year(i)
         pull_ACE_B_year(i)
         pull_GOES_year(i)
+    print('')
     return 1
 
 def pull_ACE_year(year):
@@ -44,6 +45,7 @@ def pull_ACE_year(year):
     Returns:
         int: Function finished indicator
     '''
+    print('Pulling data for '+str(year))
     filepath = uf.get_parameter('filepath')
 
     #check if there's a folder there, if not, make it
@@ -266,6 +268,7 @@ def calc_time_indices():
     end_year = int(uf.get_parameter('end_year'))
     for i in range(start_year, end_year):
         calc_time_indices_year(i)
+    print('')
     return 1
     
 def calc_time_indices_year(year):
@@ -364,6 +367,7 @@ ACE solar wind dynamic pressure and GOES Bz.
     end_year = int(uf.get_parameter('end_year'))
     for i in range(start_year, end_year):
         generate_ideal_timeshifts_year(i)
+    print('')
     return 1
 
 def generate_ideal_timeshifts_year(year):
