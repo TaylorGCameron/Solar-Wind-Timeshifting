@@ -1,10 +1,13 @@
 #The path where data files are stored goes here
-
 filepath = C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/
+
+#The range of years to calculate over, exclusive. So years are calculated UP TO the end year.
+start_year = 2000
+end_year = 2010
 
 #The following lines specify the interval lengths and spacing. If changed,
 #you will need to re-run generate_time_indices, generate_ideal_timeshifts,
-and re-calculate all timeshifts. Both are in days
+#and re-calculate all timeshifts. Both are in days
 
 interval_length = 2./24.
 dt = 0.5/24.
