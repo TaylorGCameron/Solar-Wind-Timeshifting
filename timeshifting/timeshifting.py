@@ -45,7 +45,10 @@ def calc_timeshifts(method, name, **parameters):
         
     path = filepath+'Shifts/'+name+'/'
 
-    for i in range(2000,2010):
+    start_year = int(uf.get_parameter('start_year'))
+    end_year = int(uf.get_parameter('end_year'))
+
+    for i in range(start_year,end_year):
         print('Starting ', i)
         calc_timeshifts_year(i, path+name+'_shifts_'+str(i)+'.npy', method = method+'_shift', **parameters)    
 
@@ -141,9 +144,12 @@ def evaluate_method(method, corr_min, exclude = []):
     #ideal_shifts = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts.npy')
     #ideal_shifts_corrs = np.load('C:/Users/Taylor/Google Drive/Science/Data/timeshifting/ideal_shifts_corrs.npy')
     
+    start_year = int(uf.get_parameter('start_year'))
+    end_year = int(uf.get_parameter('end_year'))
+    
     ideals = np.zeros([0,2])    
     shifts = np.array([])
-    for year in range(2000,2010):
+    for year in range(start_year,end_year):
 
         ideals_year = np.load(filepath + 'Ideal_shifts/ideal_shifts_'+str(year)+'.npy')
         ideals = np.append(ideals, ideals_year, axis = 0)
