@@ -17,8 +17,24 @@ import os
 import scipy.stats
 import time
 
+def pull_data():
+    '''
+    Pull a range (specified in config.par) of years of ACE SWE, ACE MFI, and GOES MFI data from CDAWeb, clean it, and store it in a location specified in config.par.
+    
+    Arguments:
+        
+    Returns:
+        int: Function finished indicator
+    '''
+    start_year = int(uf.get_parameter('start_year'))
+    end_year = int(uf.get_parameter('end_year'))
+    for i in range(start_year, end_year):
+        pull_ACE_year(i)
+        pull_ACE_B_year(i)
+        pull_GOES_year(i)
+    return 1
 
-def pull_ACE(year):
+def pull_ACE_year(year):
     '''
     Pull a year of ACE SWE data from CDAWeb, clean it, and store it in a location specified in config.par
     
@@ -93,7 +109,7 @@ def collapse_down(arr,n):
     return np.mean(arr[:(len(arr)//n)*n].reshape(-1,n), axis=1)
 
 #Pulls a year of ACE magnetic field data, collapses it down to 64 second cadence, and saves it to a file
-def pull_ACE_B(year, filepath = ''):
+def pull_ACE_B_year(year, filepath = ''):
     '''
     Pull a year of ACE MFI data from CDAWeb, clean it, and store it in a location specified in config.par
     
@@ -156,7 +172,7 @@ def pull_ACE_B(year, filepath = ''):
     print('File saved to ' + filename)
 
 
-def pull_GOES(year, filepath = ''):
+def pull_GOES_year(year, filepath = ''):
     '''
     Pull a year of GOES data from CDAWeb, clean it, and store it in a location specified in config.par. 
     
@@ -234,7 +250,25 @@ def pull_GOES(year, filepath = ''):
     print(str(year)+' finished!')
     print('File saved to ' + filename)
     
-def calc_time_indices(year):
+def calc_time_indices():
+    '''
+    Create and save to file three lists of indices for each year, for ACE swe, ACE mfi, and GOES.
+    The indices define time intervals separated by a time dt, of length interval_length, both contained 
+    in config.par. The range of years computed for are also contained in config.par.
+    
+    Arguments:
+        year(int) -- The year for which indices will be calculated
+        
+    Returns:
+        int: Function finished indicator
+    '''
+    start_year = int(uf.get_parameter('start_year'))
+    end_year = int(uf.get_parameter('end_year'))
+    for i in range(start_year, end_year):
+        calc_time_indices_year(i)
+    return 1
+    
+def calc_time_indices_year(year):
     '''
     Create and save to file three lists of indices for one year, for ACE swe, ACE mfi, and GOES.
     The indices define time intervals separated by a time dt, of length interval_length. 
@@ -316,10 +350,25 @@ def calc_time_indices(year):
     print('')
     return 1
     
-
-def generate_ideal_timeshifts(year):
+def generate_ideal_timeshifts():
     '''
-    Generate and dave a list of ideal (correct) timeshifts generated from cross-correlating
+Generate and save a list of ideal (correct) timeshifts generated from cross-correlating
+ACE solar wind dynamic pressure and GOES Bz.
+
+    Arguments:
+        
+    Returns:
+        int: Function finished indicator
+    '''
+    start_year = int(uf.get_parameter('start_year'))
+    end_year = int(uf.get_parameter('end_year'))
+    for i in range(start_year, end_year):
+        generate_ideal_timeshifts_year(i)
+    return 1
+
+def generate_ideal_timeshifts_year(year):
+    '''
+    Generate and save a list of ideal (correct) timeshifts generated from cross-correlating
 ACE solar wind dynamic pressure and GOES Bz for one year.
 
     Arguments:
