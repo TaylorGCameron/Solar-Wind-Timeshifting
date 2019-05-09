@@ -13,3 +13,5 @@ data.pull_data()
 data.calc_time_indices()
     
 data.generate_ideal_timeshifts()
+
+data.average_data()
