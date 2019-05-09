@@ -565,3 +565,93 @@ def _flat_shift(ACE_i, ACE, GOES_i, GOES):
     shift = delta_x_av/vel_av
     
     return shift
+
+def average_arr(arr, indices):
+    '''
+    Averages a structured array based on a list of indices indicating
+    start and end chunks of data.
+    
+    Arguments:
+        arr(array): A structured array
+        indices(array) An array of size nx2, with elements referring to indices of arr
+        
+    Returns:
+        array: A structured array of length n, containing averages of arr.
+    '''
+    #First create empty structures to hold the data
+    avg = np.full(len(indices),np.nan ,dtype = arr.dtype)
+    
+    uf.status(0)
+    
+    for i in range(len(avg)):
+        if indices[i,0] == -1:
+            continue
+        for var in arr.dtype.names:
+            if np.isnan(arr[var][indices[i,0]:indices[i,1]]).all():
+                continue
+            avg[var][i]= np.nanmean(arr[var][indices[i,0]:indices[i,1]], axis = 0)
+        if np.mod(i,100) == 0:
+            uf.status(int(i/len(indices)*100))
+    uf.status(100)
+    print('')
+    
+    return avg
+def average_data_year(year):
+    '''
+    For each interval in a year, compute the average of a bunch of different 
+    ACE and GOES quantities, and save them to file for use later.Requires data files to have been downloaded.
+    
+    Arguments:
+        year(int): The year for which the averages will be computed
+    
+    Returns:
+        int: Function completed indicator
+    '''
+
+    filepath = uf.get_parameter('filepath')
+
+    print('Starting '+str(year))
+    
+    #ACE
+    #check for file
+    if os.path.exists(filepath+'Data/ACE_avg_'+str(year)+'.npy') & os.path.exists(filepath+'Data/ACE_B_avg_'+str(year)+'.npy') & os.path.exists(filepath+'Data/GOES_avg_'+str(year)+'.npy'):
+        print('File '+'ACE_avg_'+str(year)+'.npy'+' already exists! Skipping...')
+        return 1
+    
+    ACE = np.load(filepath+'Data/ACE_'+str(year)+'.npy')
+    ACE_indices = np.load(filepath+'Indices/ACE_indices_'+str(year)+'.npy')
+    
+    ACE_avg = average_arr(ACE, ACE_indices)
+    np.save(filepath+'Data/ACE_avg_'+str(year)+'.npy' ,ACE_avg)
+
+    #ACE_B
+    ACE_B = np.load(filepath+'Data/ACE_B_'+str(year)+'.npy')
+    ACE_B_indices = np.load(filepath+'Indices/ACE_B_indices_'+str(year)+'.npy')
+    
+    ACE_B_avg = average_arr(ACE_B, ACE_B_indices)
+    np.save(filepath+'Data/ACE_B_avg_'+str(year)+'.npy' ,ACE_B_avg)
+
+    #GOES
+    GOES = np.load(filepath+'Data/GOES_'+str(year)+'.npy')
+    GOES_indices = np.load(filepath+'Indices/GOES_indices_'+str(year)+'.npy')
+    
+    GOES_avg = average_arr(GOES, GOES_indices)
+    np.save(filepath+'Data/GOES_avg_'+str(year)+'.npy' ,GOES_avg)
+    
+    return ACE_avg
+
+def average_data():
+    '''
+    Computes average_data_year() for each year from start_year to end_year as
+    specified in config.par. 
+    
+    Arguments:
+    
+    Returns:
+        int: Function completed indicator
+    '''
+    start_year = int(uf.get_parameter('start_year'))
+    end_year = int(uf.get_parameter('end_year'))
+    for i in range(start_year, end_year):
+        average_data_year(i)
+    return 1
