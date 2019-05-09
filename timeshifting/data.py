@@ -55,7 +55,7 @@ def pull_ACE_year(year):
 
     #Check if file already exists
     if os.path.exists(filename):
-         print('File '+filename+' already exists! Skipping...')
+         print('File '+'ACE_'+str(year)+'.npy'+' already exists! Skipping...')
          return 1
     
     #First create empty structures to hold the data
@@ -131,7 +131,7 @@ def pull_ACE_B_year(year, filepath = ''):
 
     #Check if file already exists
     if os.path.exists(filename):
-         print('File '+filename+' already exists! Skipping...')
+         print('File '+'ACE_B_'+str(year)+'.npy'+' already exists! Skipping...')
          return 1
      
     print('Pulling ACE mfi data from '+str(year) )
@@ -195,7 +195,7 @@ def pull_GOES_year(year, filepath = ''):
 
     #Check if file already exists
     if os.path.exists(filename):
-         print('File '+filename+' already exists! Skipping...')
+         print('File '+'GOES_'+str(year)+'.npy'+' already exists! Skipping...')
          return 1
     
     print('Pulling GOES data from '+str(year) )
@@ -295,7 +295,7 @@ def calc_time_indices_year(year):
 
     #Check if file already exists
     if os.path.exists(filename):
-         print('File '+filename+' already exists! Skipping...')
+         print('File '+'ACE_indices_'+str(year)+'.npy'+' already exists! Skipping...')
          return 1    
     
     ACE = np.load(filepath+'Data/ACE_'+str(year)+'.npy') 
@@ -389,7 +389,7 @@ ACE solar wind dynamic pressure and GOES Bz for one year.
     #First, check whether this data file exists already. 
     
     if os.path.exists(filepath+'Ideal_shifts/ideal_shifts_'+str(year)+'.npy'):
-        print('File '+filepath+'Ideal_shifts/ideal_shifts_'+str(year)+'.npy'+' already exists! Skipping...')
+        print('File '+'ideal_shifts_'+str(year)+'.npy'+' already exists! Skipping...')
         return 1
     
     #Load data
