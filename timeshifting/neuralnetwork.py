@@ -91,6 +91,14 @@ class Network(object):
         self.ideal_shifts = ideals[:,0]
         self.ideal_shifts_corrs = ideals[:,1]
         
+        #Get rid of nans? This will need to be changed if I want to utilize all data, instead of just averages.
+        self.ACE = self.ACE[np.isfinite(self.ideal_shifts)]
+        self.ACE_B = self.ACE_B[np.isfinite(self.ideal_shifts)]
+        self.GOES = self.GOES[np.isfinite(self.ideal_shifts)]
+
+        self.ideal_shifts_corrs = self.ideal_shifts_corrs[np.isfinite(self.ideal_shifts)]
+        self.ideal_shifts = self.ideal_shifts[np.isfinite(self.ideal_shifts)]
+        
         return 1
     
     def prepareTrainingData(self, func = 0):
