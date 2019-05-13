@@ -124,7 +124,7 @@ def calc_timeshifts_year(year, filename, method = 'flat', **parameters):
     np.save(filename,  shifts)
     
     
-def evaluate_method(method, corr_min, exclude = []):
+def evaluate_method(method, corr_min = 0.3, exclude = []):
     '''
     Compare the timeshifts for a given method to ideal timeshifts, and plot a histogram of the differences.
     Also lists the width and center of the resulting histogram.
