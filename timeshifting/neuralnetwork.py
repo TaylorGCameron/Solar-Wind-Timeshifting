@@ -317,3 +317,8 @@ def calc_model(w, input_arr):
     output = (np.dot(nodes, w[n-1][0])+w[n-1][1])
     
     return output
+
+def loadNetwork(filename):
+    filepath = uf.get_parameter('filepath')
+    filename = filepath+'Models/'+filename
+    return np.load(filename).item()
