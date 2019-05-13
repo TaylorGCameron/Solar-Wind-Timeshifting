@@ -22,11 +22,11 @@ class Network(object):
                  n_train = 2500,
                  min_shift = 10.,
                  layout = np.array([10,10,10]),
-                 n_models = 20,
+                 n_models = 2,
                  optimizer = 'adam',
                  loss = 'mae',
                  metrics = ['mse'],
-                 n_epochs = 1000,
+                 n_epochs = 100, 
                  batch_size = 50,
                  filename = 'test_model.npy',
                  custom_func = ''
