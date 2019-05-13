@@ -259,6 +259,37 @@ class Network(object):
          print ('The optimizer used was ', self.optimizer, ' and the loss function was ', self.loss)
          
 
+def updateNetwork(filename):
+    old = loadNetwork(filename)
+    try: 
+        new = Network(training_corr_min = old.corr_min,
+                 n_train = old.n_train,
+                 min_shift = old.min_shift,
+                 layout = old.layout,
+                 n_models = old.n_models,
+                 optimizer = old.optimizer,
+                 loss = old.loss,
+                 metrics = old.metrics,
+                 n_epochs = old.n_epochs, 
+                 batch_size = old.batch_size,
+                 filename = filename,
+                 custom_func = old.custom_func)
+    except:
+        new = Network(training_corr_min = old.training_corr_min,
+                 n_train = old.n_train,
+                 min_shift = old.min_shift,
+                 layout = old.layout,
+                 n_models = old.n_models,
+                 optimizer = old.optimizer,
+                 loss = old.loss,
+                 metrics = old.metrics,
+                 n_epochs = old.n_epochs, 
+                 batch_size = old.batch_size,
+                 filename = filename,
+                 custom_func = old.custom_func)
+
+    new.nns_w = old.nns_w
+    new.saveModel()
 
 def get_weights(model, save = ''):
     '''
