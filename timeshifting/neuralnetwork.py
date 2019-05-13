@@ -18,7 +18,7 @@ import timeshifting.useful_functions as uf
 
 class Network(object):
     def __init__(self, 
-                 corr_min = 0.7,
+                 training_corr_min = 0.7,
                  n_train = 2500,
                  min_shift = 10.,
                  layout = np.array([10,10,10]),
@@ -39,7 +39,7 @@ class Network(object):
         self.custom_func = custom_func
         
         #Parameters for choosing training set
-        self.corr_min = corr_min
+        self.training_corr_min = training_corr_min
         self.n_train = n_train
         self.min_shift = min_shift
         
@@ -183,7 +183,7 @@ class Network(object):
         np.save(self.filename, self)
         
     #Gotta clean up all the warnings thatoccur when I run this.
-    def testModelsWidth(self):
+    def testModelsWidth(self, corr_min = 0.3):
         if len(self.ideal_shifts) == 1:
             self.loadData()
             
@@ -193,7 +193,7 @@ class Network(object):
             return np.abs(A)*np.exp(-(x-mu)**2/(2.*sigma**2))+c    
         #Make inputs
         
-        truth_list = self.ideal_shifts_corrs > 0.3
+        truth_list = self.ideal_shifts_corrs > corr_min
         #truth_list = ideal_shifts_corrs < 0.3
     
         inds = np.arange(len(self.ideal_shifts))[truth_list]
@@ -257,6 +257,7 @@ class Network(object):
          print('The training set was ', self.n_train ,'samples using a minimum correlation of ', self.corr_min)
          print('This set was trained for ', self.n_epochs, ' epochs with a batch size of ', self.batch_size)
          print ('The optimizer used was ', self.optimizer, ' and the loss function was ', self.loss)
+         
 
 
 def get_weights(model, save = ''):
