@@ -36,6 +36,8 @@ class Network(object):
         self.start_year = int(uf.get_parameter('start_year'))
         self.end_year = int(uf.get_parameter('end_year'))
         
+        self.custom_func = custom_func
+        
         #Parameters for choosing training set
         self.corr_min = corr_min
         self.n_train = n_train
@@ -101,13 +103,22 @@ class Network(object):
         
         return 1
     
-    def prepareTrainingData(self, func = 0):
+    def run_custom_func(self, f, inds):
+        d = {}
+        exec(f, globals(), d)
+        return d['input_output'](self, inds)
+    
+    def prepareTrainingData(self):
         self.truth_list = np.logical_and(np.logical_and(self.GOES['pos'][:,0] > 0, self.ideal_shifts_corrs > self.corr_min),self.ideal_shifts > self.min_shift )    
         self.inds = np.random.choice(np.arange(len(self.ideal_shifts))[self.truth_list], size = self.n_train, replace = False)
             
-        self.X_train, self.Y_train = self.input_output(self.inds)
-        self.io_text = inspect.getsourcelines(self.input_output)
-
+        if self.custom_func == '':
+            
+            self.X_train, self.Y_train = self.input_output(self.inds)
+            self.io_text = inspect.getsourcelines(self.input_output)
+        else: 
+            self.X_train, self.Y_train = self.run_custom_func(self.custom_func, self.inds)
+            self.io_text = self.custom_func
         
     def createNetworks(self):
         for i in range(self.n_models):
@@ -138,13 +149,12 @@ class Network(object):
                 self.nns_w.append(get_weights(self.nns[i]))
         #print(i)
 
-    def run(self, func = 0):
+    def run(self):
         self.loadData()
-        self.prepareTrainingData(func = func)
+        self.prepareTrainingData()
         self.createNetworks()
         self.trainNetworks()
-        self.clear()
-        np.save(self.filename, self)
+        self.saveModel()
     def saveNetworks(self):
             for i in range(len(self.nns)):
                 get_weights(self.nns[i], save = self.path+'model_'+str(i).zfill(3))
@@ -168,6 +178,10 @@ class Network(object):
         self.X_train = 1
         self.Y_train = 1
         
+    def saveModel(self):
+        self.clear()
+        np.save(self.filename, self)
+        
     #Gotta clean up all the warnings thatoccur when I run this.
     def testModelsWidth(self):
         if len(self.ideal_shifts) == 1:
@@ -184,8 +198,14 @@ class Network(object):
     
         inds = np.arange(len(self.ideal_shifts))[truth_list]
             
-        X_data, Y_data = self.input_output(inds)
         
+        
+        if self.custom_func == '':
+            
+            X_data, Y_data = self.input_output(inds)
+        else: 
+            X_data, Y_data = self.run_custom_func(self.custom_func, inds)
+                    
         #So, load in the models. 
             #self.xx_w = X_data
         Y_predict = np.zeros(len(Y_data))
@@ -201,6 +221,8 @@ class Network(object):
         deltas = (self.ideal_shifts[truth_list] - Y_predict)/60
         #self.Y_predict = Y_predict
         #self.Y_data  = Y_data
+        deltas = deltas[np.isfinite(deltas)]
+        
         deltas = deltas[deltas < 40]
         deltas = deltas[deltas > -40]    
         hist = np.histogram(deltas, bins = 79)  
@@ -227,7 +249,10 @@ class Network(object):
          print('Contains ', self.n_models,' networks')
          print('Each network is arranged as ',np.append(np.insert(self.layout, 0,self.nns_w[0][0][0].shape[0]),[self.nns_w[0][-1][0].shape[1]]))
          print ('The input vector is given by:')
-         print(''.join(self.io_text[0]))
+         if self.custom_func == '':
+             print(''.join(self.io_text[0]))
+         else:
+             for line in self.io_text.split('\n'): print(line)
          print ('')
          print('The training set was ', self.n_train ,'samples using a minimum correlation of ', self.corr_min)
          print('This set was trained for ', self.n_epochs, ' epochs with a batch size of ', self.batch_size)
