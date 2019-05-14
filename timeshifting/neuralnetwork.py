@@ -252,9 +252,9 @@ class Network(object):
          if self.custom_func == '':
              print(''.join(self.io_text[0]))
          else:
-             for line in self.io_text.split('\n'): print(line)
+             for line in self.custom_func.split('\n'): print(line)
          print ('')
-         print('The training set was ', self.n_train ,'samples using a minimum correlation of ', self.corr_min)
+         print('The training set was ', self.n_train ,'samples using a minimum correlation of ', self.training_corr_min)
          print('This set was trained for ', self.n_epochs, ' epochs with a batch size of ', self.batch_size)
          print ('The optimizer used was ', self.optimizer, ' and the loss function was ', self.loss)
          
