@@ -55,7 +55,7 @@ def get_keyword(text, keyword):
     '''Search a list of strings  for a keyword, and return what comes after it'''
     for line in text:
         if line.startswith(keyword) and line.find('=') != -1:
-            return line[line.find('=')+1:].replace('\n','').replace(' ','')
+            return line[line.find('=')+1:].replace('\n','').strip()
     raise Exception('Keyword \"'+keyword+'\" not found in config.par')
 
 def get_parameter(keyword):
