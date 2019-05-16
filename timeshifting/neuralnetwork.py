@@ -66,14 +66,15 @@ class Network(object):
             print('Generating filename')
             #construct a filename
             filename = 'network_'+str(self.layout)+'x'+str(self.n_models)+'_'+str(self.n_epochs)+'_'+str(self.batch_size)+'.npy'
-
+            
+            
             n_f = 1
             while os.path.exists(self.filepath+'Models/'+filename):
                n_f = n_f+1
                filename = 'network_'+str(self.layout)+'x'+str(self.n_models)+'_'+str(self.n_epochs)+'_'+str(self.batch_size)+'_'+str(n_f)+'.npy'
 
 
-        self.filename = self.filepath+'Models/'+filename
+        self.filename = filename 
         
         #Internal stuff 
         self.nns = []
@@ -92,7 +93,7 @@ class Network(object):
         return X_data, Y_data
         
     def loadData(self):
-
+        self.filepath = uf.get_parameter('filepath')
         ideals = np.load(self.filepath + 'Ideal_shifts/ideal_shifts_'+str(self.start_year)+'.npy')
         self.ACE = np.load(self.filepath + 'Data/ACE_avg_'+str(self.start_year)+'.npy')
         self.ACE_B = np.load(self.filepath + 'Data/ACE_B_avg_'+str(self.start_year)+'.npy')
@@ -170,8 +171,9 @@ class Network(object):
         self.trainNetworks()
         self.saveModel()
     def saveNetworks(self):
-            for i in range(len(self.nns)):
-                get_weights(self.nns[i], save = self.path+'model_'+str(i).zfill(3))
+        self.filepath = uf.get_parameter('filepath')
+        for i in range(len(self.nns)):
+            get_weights(self.nns[i], save = self.filepath+'model_'+str(i).zfill(3))
         #print(i)
     def clearKerasModels(self):
         self.nns = 0
@@ -194,7 +196,9 @@ class Network(object):
         
     def saveModel(self):
         self.clear()
-        np.save(self.filename, self)
+        self.filepath = uf.get_parameter('filepath')
+        f = self.filepath+'Models/'+self.filename
+        np.save(f, self)
         
     #Gotta clean up all the warnings thatoccur when I run this.
     def testModelsWidth(self, corr_min = 0.3):
