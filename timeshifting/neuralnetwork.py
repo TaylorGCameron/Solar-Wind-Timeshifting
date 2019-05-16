@@ -28,7 +28,7 @@ class Network(object):
                  metrics = ['mse'],
                  n_epochs = 100, 
                  batch_size = 50,
-                 filename = 'test_model.npy',
+                 filename = '',
                  custom_func = ''
                  ):
         
@@ -55,10 +55,24 @@ class Network(object):
         self.n_epochs = n_epochs
         self.batch_size = batch_size
         
+
         #Filepath
+        
         self.filepath = uf.get_parameter('filepath')
         if not os.path.exists(self.filepath+'Models/'):
             os.makedirs(self.filepath+'Models/')
+        
+        if filename == '':
+            print('Generating filename')
+            #construct a filename
+            filename = 'network_'+str(self.layout)+'x'+str(self.n_models)+'_'+str(self.n_epochs)+'_'+str(self.batch_size)+'.npy'
+
+            n_f = 1
+            while os.path.exists(self.filepath+'Models/'+filename):
+               n_f = n_f+1
+               filename = 'network_'+str(self.layout)+'x'+str(self.n_models)+'_'+str(self.n_epochs)+'_'+str(self.batch_size)+'_'+str(n_f)+'.npy'
+
+
         self.filename = self.filepath+'Models/'+filename
         
         #Internal stuff 
