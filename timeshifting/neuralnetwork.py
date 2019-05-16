@@ -109,7 +109,7 @@ class Network(object):
         return d['input_output'](self, inds)
     
     def prepareTrainingData(self):
-        self.truth_list = np.logical_and(np.logical_and(self.GOES['pos'][:,0] > 0, self.ideal_shifts_corrs > self.corr_min),self.ideal_shifts > self.min_shift )    
+        self.truth_list = np.logical_and(np.logical_and(self.GOES['pos'][:,0] > 0, self.ideal_shifts_corrs > self.training_corr_min),self.ideal_shifts > self.min_shift )    
         self.inds = np.random.choice(np.arange(len(self.ideal_shifts))[self.truth_list], size = self.n_train, replace = False)
             
         if self.custom_func == '':
