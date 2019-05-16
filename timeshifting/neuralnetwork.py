@@ -309,6 +309,13 @@ def updateNetwork(filename):
     new.nns_w = old.nns_w
     new.saveModel()
 
+def updateAll():
+    filepath = uf.get_parameter('filepath')
+    f = filepath+'Models/'
+    
+    for file in os.listdir(f):
+        updateNetwork(file)
+
 def get_weights(model, save = ''):
     '''
     This function takes a keras model and outputs the weights in an array
