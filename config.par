@@ -1,6 +1,6 @@
 #The path where data files are stored goes here
-filepath = C:/Users/Taylor/Data/Projects/Solar-Wind-Timeshifting/
-
+filepath = C:/Users/Taylor/Google Drive/Science/Data/Solar-Wind-Timeshifting/
+#filepath = C:/Users/taylo/Google Drive/Science/Data/Solar-Wind-Timeshifting/
 #The range of years to calculate over, exclusive. So years are calculated UP TO the end year.
 start_year = 2000
 end_year = 2010
